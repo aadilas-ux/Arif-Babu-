@@ -14,7 +14,7 @@ module.exports = function ({ api, models }) {
     /* ==================== 🔥 ARIF BABU BOT - LISTENER 🔥 ==================== */
 
     console.log("\n" + "=".repeat(60));
-    console.log("🎧 ARIF BABU BOT - LISTENER SYSTEM 🎧");
+    console.log("🍪 ARIF BABU BOT - LISTENER SYSTEM ✅");
     console.log("=".repeat(60) + "\n");
 
     // ==================== UTILITY FUNCTIONS ====================
@@ -144,92 +144,6 @@ ${body.split('\n').map(line => `│ ${line.padEnd(line.length)} │`).join('\n')
             return [];
         }
     };
-
-    /**
-     * Reset daily/weekly counters
-     */
-    const resetCounters = async () => {
-        if (isSendingTop) return;
-        isSendingTop = true;
-
-        try {
-            const currentDay = moment.tz("Asia/Kolkata").day();
-            const adminIDs = [...(global.config.NDH || []), ...(global.config.ADMINBOT || [])];
-
-            // Get all checktt files
-            const checkttFiles = fs.readdirSync(checkttPath)
-                .filter(file => file.endsWith('.json'))
-                .map(file => file.replace('.json', ''));
-
-            for (const threadID of checkttFiles) {
-                const filePath = path.join(checkttPath, `${threadID}.json`);
-                const data = fs.readJsonSync(filePath);
-
-                // Daily reset
-                if (lastDayCheck !== currentDay) {
-                    // Send daily top
-                    const dailyTop = await getTopChatters(threadID, 'day', 10);
-
-                    if (dailyTop.length > 0) {
-                        const body = dailyTop.map(user => 
-                            `${user.rank}. ${user.name} → ${formatNumber(user.count)} msgs`
-                        ).join('\n');
-
-                        const message = createStyledBox("🔥 DAILY TOP CHAT", body);
-
-                        // Send to thread
-                        api.sendMessage(message, threadID, (err) => {
-                            if (err) console.error("❌ Failed to send daily top:", err);
-                        });
-                    }
-
-                    // Reset daily counters
-                    data.day = [];
-                }
-
-                // Weekly reset (Monday = 1)
-                if (currentDay === 1 && lastDayCheck !== 1) {
-                    // Send weekly top
-                    const weeklyTop = await getTopChatters(threadID, 'week', 10);
-
-                    if (weeklyTop.length > 0) {
-                        const body = weeklyTop.map(user => 
-                            `${user.rank}. ${user.name} → ${formatNumber(user.count)} msgs`
-                        ).join('\n');
-
-                        const message = createStyledBox("👑 WEEKLY TOP CHAT", body);
-
-                        // Send to thread
-                        api.sendMessage(message, threadID, (err) => {
-                            if (err) console.error("❌ Failed to send weekly top:", err);
-                        });
-                    }
-
-                    // Reset weekly counters
-                    data.week = [];
-                }
-
-                // Update time and save
-                data.time = currentDay;
-                fs.writeJsonSync(filePath, data, { spaces: 4 });
-            }
-
-            lastDayCheck = currentDay;
-
-        } catch (error) {
-            console.error("❌ Error resetting counters:", error);
-        } finally {
-            isSendingTop = false;
-        }
-    };
-
-    // Check for day change every 10 seconds
-    setInterval(async () => {
-        const currentDay = moment.tz("Asia/Kolkata").day();
-        if (lastDayCheck !== currentDay) {
-            await resetCounters();
-        }
-    }, 10000);
 
     // ==================== DATABASE LOADING ====================
 
