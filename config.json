@@ -3,10 +3,10 @@
   "DeveloperMode": false,
   "autoCreateDB": true,
   "BOTNAME": "ARIF BABU 😉❤️",
-  "PREFIX": "#",
+  "PREFIX": "+",
 
-  "ADMINBOT": ["61572870433256"],
-  "NDH": ["61572870433256"],
+  "ADMINBOT": ["100091942051676"],
+  "NDH": ["100091942051676"],
 
   "adminOnly": false,
   "ndhOnly": false,
