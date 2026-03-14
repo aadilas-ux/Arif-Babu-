@@ -46,8 +46,8 @@ global.client = {
 };
 
 global.data = {
-    threadInfo: new Map(),
-    threadData: new Map(),
+    help: new Map(),
+    help all: new Map(),
     userName: new Map(),
     userBanned: new Map(),
     threadBanned: new Map(),
